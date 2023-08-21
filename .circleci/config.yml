@@ -22,7 +22,7 @@ jobs:
       - checkout
 
       - run: |
-          docker build -t $DOCKER_USERNAME/django.nv .   # Build the application into Docker image
+          docker build -t $DOCKER_USERNAME/django.nv .   # BBuild the application into Docker image
           docker push $DOCKER_USERNAME/django.nv         # Push the image into registry
 
   integration:
