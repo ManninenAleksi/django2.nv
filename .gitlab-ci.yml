@@ -3,15 +3,34 @@ image: docker:20.10
 services:
   - docker:dind
 
-stages:
-  - build
-  - test
-  - release
-  - preprod
-  - integration
-  - prod
+stages:   # Dictionary
+ - build   # this is build stage
+ - test    # this is test stage
+ - integration # this is an integration stage
+ - prod       # this is prod/production stage
 
-job:
-  stage: build
+sast:       # this is job named build, it can be anything, job1, job2, etc.,
+  stage: build    # this job belongs to the build stage. Here both job name and stage name is the same i.e., build
+  image: ruby:3.0 # Ruby image
   script:
-    - echo "I'm a job"
+      - gem install brakeman
+      - brakeman --no-exit-on-warn --no-exit-on-error -A -f json -i .brakeman.ignore | tee result.json # link to tool https://brakemanscanner.org/ -A parameters run more checks than normally
+  artifacts:
+    paths: [result.json] # saves the result to result.json file for DevSecOps Gospel
+    when: always
+
+test:
+  stage: test
+  script:
+    - echo "This is a test step"
+    # ************ Non zero exit code, fails a job. ************ #
+
+integration:        # integration job under stage integration.
+  stage: integration
+  script:
+    - echo "This is an integration step."
+
+prod:
+  stage: prod
+  script:
+    - echo "This is a deploy step."
